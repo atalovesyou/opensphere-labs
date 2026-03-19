@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenSphere Labs — AI Products That Ship Weekly</title>
+    <meta name="description" content="Micro-SaaS products built by OpenSphere. UnSlop, ImmigrantTax, GhostTracker, IntakeBot — AI tools that solve real problems.">
+    <meta property="og:title" content="OpenSphere Labs — AI Products That Ship Weekly">
+    <meta property="og:description" content="4 products shipped in 4 days. AI tools for freelancers, law firms, and small businesses.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-text { background: linear-gradient(135deg, #6366f1, #ec4899, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-size: 200% 200%; animation: gradient-shift 6s ease infinite; }
+        @keyframes gradient-shift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-6px); }
+        .glow-indigo:hover { box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2); }
+        .glow-emerald:hover { box-shadow: 0 20px 40px rgba(16, 185, 129, 0.2); }
+        .glow-amber:hover { box-shadow: 0 20px 40px rgba(245, 158, 11, 0.2); }
+        .glow-purple:hover { box-shadow: 0 20px 40px rgba(168, 85, 247, 0.2); }
+        .counter { animation: count-up 2s ease-out; }
+    </style>
+</head>
+<body class="bg-gray-950 text-white min-h-screen">
+
+    <!-- Nav -->
+    <nav class="fixed top-0 w-full bg-gray-950/80 backdrop-blur-xl z-50 border-b border-gray-800/50">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="text-2xl">🚀</span>
+                <span class="text-xl font-bold">OpenSphere Labs</span>
+            </div>
+            <a href="https://opensphere.ai" class="text-sm text-gray-400 hover:text-white transition">opensphere.ai →</a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="pt-32 pb-16 px-6">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-indigo-500/10 border border-indigo-500/20 rounded-full text-indigo-400 text-sm mb-8">
+                🔥 4 products shipped in 4 days
+            </div>
+            <h1 class="text-5xl md:text-7xl font-black leading-tight mb-6">
+                AI tools that<br><span class="gradient-text">actually ship</span>
+            </h1>
+            <p class="text-xl text-gray-400 max-w-2xl mx-auto mb-6">
+                Micro-SaaS products solving real problems for freelancers, law firms, and small businesses. Built fast. Priced fair. No VC bloat.
+            </p>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="pb-16 px-6">
+        <div class="max-w-4xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="text-center p-6 bg-gray-900/50 border border-gray-800 rounded-xl">
+                    <div class="text-3xl font-black text-indigo-400">4</div>
+                    <div class="text-sm text-gray-400 mt-1">Products live</div>
+                </div>
+                <div class="text-center p-6 bg-gray-900/50 border border-gray-800 rounded-xl">
+                    <div class="text-3xl font-black text-emerald-400">4</div>
+                    <div class="text-sm text-gray-400 mt-1">Days to ship</div>
+                </div>
+                <div class="text-center p-6 bg-gray-900/50 border border-gray-800 rounded-xl">
+                    <div class="text-3xl font-black text-amber-400">$0</div>
+                    <div class="text-sm text-gray-400 mt-1">To start</div>
+                </div>
+                <div class="text-center p-6 bg-gray-900/50 border border-gray-800 rounded-xl">
+                    <div class="text-3xl font-black text-purple-400">∞</div>
+                    <div class="text-sm text-gray-400 mt-1">More coming</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products -->
+    <section class="py-16 px-6">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="text-3xl font-bold text-center mb-12">The Portfolio</h2>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- UnSlop -->
+                <a href="https://atalovesyou.github.io/unslop-ai/" class="card-hover glow-indigo block bg-gray-900/50 border border-gray-800 rounded-2xl p-8 group">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-3xl">🧹</span>
+                        <div>
+                            <h3 class="text-xl font-bold group-hover:text-indigo-400 transition">UnSlop.ai</h3>
+                            <span class="text-xs px-2 py-0.5 bg-indigo-600/20 text-indigo-400 rounded-full">Week 1 · Mar 16</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 mb-4">AI slop detector and humanizer. Paste any text, get a slop score across 6 dimensions. One-click rewrite to remove AI artifacts.</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="px-2 py-1 bg-gray-800 rounded-lg text-xs text-gray-300">Writers</span>
+                        <span class="px-2 py-1 bg-gray-800 rounded-lg text-xs text-gray-300">Marketers</span>
+                        <span class="px-2 py-1 bg-gray-800 rounded-lg text-xs text-gray-300">Students</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-emerald-400 font-medium">Free → $9/mo</span>
+                        <span class="text-sm text-gray-500 group-hover:text-indigo-400 transition">Try it →</span>
+                    </div>
+                </a>
+
+                <!-- ImmigrantTax -->
+                <a href="https://atalovesyou.github.io/immigranttax-ai/" class="card-hover glow-emerald block bg-gray-900/50 border border-gray-800 rounded-2xl p-8 group">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-3xl">🌍</span>
+                        <div>
+                            <h3 class="text-xl font-bold group-hover:text-emerald-400 transition">ImmigrantTax.ai</h3>
+                            <span class="text-xs px-2 py-0.5 bg-emerald-600/20 text-emerald-400 rounded-full">Week 2 · Mar 18</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 mb-4">Cross-border tax guidance for immigrants. Analyze your multi-country tax situation with AI. Get forms, deadlines, and treaty info instantly.</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="px-2 py-1 bg-gray-800 rounded-lg text-xs text-gray-300">Immigrants</span>
+                        <span class="px-2 py-1 bg-gray-800 rounded-lg text-xs text-gray-300">Expats</span>
+                        <span class="px-2 py-1 bg-gray-800 rounded-lg text-xs text-gray-300">Digital Nomads</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-emerald-400 font-medium">Free → $19/mo</span>
+                        <span class="text-sm text-gray-500 group-hover:text-emerald-400 transition">Try it →</span>
+                    </div>
+                </a>
+
+                <!-- GhostTracker -->
+                <a href="https://atalovesyou.github.io/ghosttracker/" class="card-hover glow-amber block bg-gray-900/50 border border-gray-800 rounded-2xl p-8 group">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-3xl">👻</span>
+                        <div>
+                            <h3 class="text-xl font-bold group-hover:text-amber-400 transition">GhostTracker</h3>
+                            <span class="text-xs px-2 py-0.5 bg-amber-600/20 text-amber-400 rounded-full">Week 2 · Mar 18</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 mb-4">Proposal analytics for freelancers. Upload a PDF, get a tracked link. Know when clients open, which pages they read, if they forwarded it.</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="px-2 py-1 bg-gray-800 rounded-lg text-xs text-gray-300">Freelancers</span>
+                        <span class="px-2 py-1 bg-gray-800 rounded-lg text-xs text-gray-300">Agencies</span>
+                        <span class="px-2 py-1 bg-gray-800 rounded-lg text-xs text-gray-300">Sales</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-emerald-400 font-medium">Free → $19/mo</span>
+                        <span class="text-sm text-gray-500 group-hover:text-amber-400 transition">Try it →</span>
+                    </div>
+                </a>
+
+                <!-- IntakeBot -->
+                <a href="https://atalovesyou.github.io/intakebot/" class="card-hover glow-purple block bg-gray-900/50 border border-gray-800 rounded-2xl p-8 group">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-3xl">🤖</span>
+                        <div>
+                            <h3 class="text-xl font-bold group-hover:text-purple-400 transition">IntakeBot</h3>
+                            <span class="text-xs px-2 py-0.5 bg-purple-600/20 text-purple-400 rounded-full">Week 3 · Mar 19</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 mb-4">Conversational AI client intake. Replace static forms with a chatbot that qualifies clients, adapts to answers, and sends structured data. Embeddable widget.</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="px-2 py-1 bg-gray-800 rounded-lg text-xs text-gray-300">Law Firms</span>
+                        <span class="px-2 py-1 bg-gray-800 rounded-lg text-xs text-gray-300">Freelancers</span>
+                        <span class="px-2 py-1 bg-gray-800 rounded-lg text-xs text-gray-300">SMBs</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-emerald-400 font-medium">Free → $19/mo</span>
+                        <span class="text-sm text-gray-500 group-hover:text-purple-400 transition">Try it →</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Coming Next -->
+    <section class="py-16 px-6">
+        <div class="max-w-3xl mx-auto text-center">
+            <h2 class="text-2xl font-bold mb-4">Shipping one product a week.</h2>
+            <p class="text-gray-400 mb-8">Next up: CopyPilot (AI copywriting) and ReviewAgent (reputation management). Follow the build.</p>
+            <div class="flex gap-4 justify-center">
+                <a href="https://twitter.com/atalovesyou" class="px-6 py-2.5 bg-gray-800 hover:bg-gray-700 rounded-lg text-sm font-medium transition">Follow on X →</a>
+                <a href="https://linkedin.com/in/atalovesyou" class="px-6 py-2.5 bg-gray-800 hover:bg-gray-700 rounded-lg text-sm font-medium transition">LinkedIn →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 px-6 border-t border-gray-800">
+        <div class="max-w-6xl mx-auto flex items-center justify-between text-sm text-gray-500">
+            <span>🚀 OpenSphere Labs · Built by <a href="https://atalovesyou.com" class="text-gray-400 hover:text-white">Atal</a></span>
+            <span>© 2026</span>
+        </div>
+    </footer>
+
+</body>
+</html>
