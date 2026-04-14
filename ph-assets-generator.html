@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Hunt Image Generator — OpenSphere Labs</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+body{font-family:'Inter',system-ui,sans-serif;background:#0a0a0a;color:#e2e8f0}
+.canvas-wrap{background:#111;border:1px solid #333;border-radius:12px;overflow:hidden;margin:16px 0}
+canvas{display:block}
+.btn{background:linear-gradient(135deg,#f59e0b,#d97706);color:#0a0a0a;font-weight:700;border:none;border-radius:10px;padding:10px 20px;cursor:pointer;font-size:14px;transition:all .2s}
+.btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(245,158,11,0.3)}
+.btn-sm{padding:6px 14px;font-size:12px;background:#333;color:#fff;border-radius:8px;border:1px solid #555;cursor:pointer}
+.btn-sm:hover{background:#444}
+</style>
+</head>
+<body class="min-h-screen p-8">
+<div class="max-w-6xl mx-auto">
+  <h1 class="text-3xl font-bold mb-2">🚀 Product Hunt Image Generator</h1>
+  <p class="text-gray-400 mb-6">Click "Generate All" then download each image. Gallery: 1270×760 | Hero: 2400×1260</p>
+  
+  <div class="flex gap-3 mb-8">
+    <button class="btn" onclick="generateAll()">🎨 Generate All Images</button>
+    <button class="btn" onclick="downloadAll()" style="background:#22c55e">📦 Download All</button>
+  </div>
+
+  <div id="galleries"></div>
+</div>
+
+<script>
+const W_G = 1270, H_G = 760;
+const W_H = 2400, H_H = 1260;
+const products = [
+  {name:'IntakeBot',emoji:'🤖',desc:'AI lead qualification chatbot',color:'#6366f1',step:1},
+  {name:'ProposalPilot',emoji:'📄',desc:'AI proposal generator',color:'#8b5cf6',step:2},
+  {name:'ContractPilot',emoji:'📝',desc:'AI contract drafting + trap detection',color:'#a855f7',step:3},
+  {name:'ScopeGuard',emoji:'🛡️',desc:'Scope creep detection',color:'#f59e0b',step:4},
+  {name:'GhostTracker',emoji:'👻',desc:'Proposal open tracking',color:'#06b6d4',step:5},
+  {name:'InvoicePilot',emoji:'💰',desc:'NLP invoicing + auto-chase',color:'#22c55e',step:6},
+  {name:'ReviewAgent',emoji:'⭐',desc:'AI review management',color:'#ef4444',step:7},
+  {name:'UnSlop.ai',emoji:'🧹',desc:'AI content humanizer',color:'#f97316',step:8},
+  {name:'ImmigrantTax.ai',emoji:'🌍',desc:'Cross-border tax analyzer',color:'#3b82f6',step:9},
+  {name:'NameForge',emoji:'🔥',desc:'Business name generator',color:'#ec4899',step:10},
+];
+
+function drawRoundedRect(ctx,x,y,w,h,r){
+  ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);
+  ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
+}
+function drawProductCard(ctx,x,y,w,h,p,highlight=false){
+  // Card background
+  ctx.fillStyle = highlight ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.04)';
+  drawRoundedRect(ctx,x,y,w,h,12); ctx.fill();
+  ctx.strokeStyle = highlight ? p.color+'80' : 'rgba(255,255,255,0.08)';
+  ctx.lineWidth = highlight ? 2 : 1;
+  drawRoundedRect(ctx,x,y,w,h,12); ctx.stroke();
+  
+  // Emoji
+  ctx.font = '28px serif'; ctx.textAlign = 'center';
+  ctx.fillText(p.emoji, x+w/2, y+40);
+  // Name
+  ctx.font = 'bold 13px Inter,system-ui,sans-serif'; ctx.fillStyle = '#e2e8f0';
+  ctx.fillText(p.name, x+w/2, y+62);
+  // Step badge
+  ctx.fillStyle = p.color+'30'; 
+  const badgeW = 50, badgeH = 18;
+  drawRoundedRect(ctx, x+(w-badgeW)/2, y+h-28, badgeW, badgeH, 9); ctx.fill();
+  ctx.font = '10px Inter'; ctx.fillStyle = p.color;
+  ctx.fillText('Step '+p.step, x+w/2, y+h-15);
+}
+
+// IMAGE 1: Hero Pipeline
+function drawImg1(canvas){
+  const ctx=canvas.getContext('2d');
+  // BG gradient
+  const grad=ctx.createLinearGradient(0,0,0,H_G);
+  grad.addColorStop(0,'#0a0a0a');grad.addColorStop(0.5,'#0f0f23');grad.addColorStop(1,'#1a1a2e');
+  ctx.fillStyle=grad;ctx.fillRect(0,0,W_G,H_G);
+  // Title
+  ctx.textAlign='center';ctx.font='bold 32px Inter,system-ui,sans-serif';ctx.fillStyle='#fff';
+  ctx.fillText('The Free AI Freelancer Stack',W_G/2,60);
+  ctx.font='18px Inter';ctx.fillStyle='#94a3b8';
+  ctx.fillText('10 tools · 16K lines · $0 to start · No signup',W_G/2,90);
+  // Pipeline - 5 cards top row, 5 bottom row
+  const cardW=180, cardH=95, gap=20;
+  const startX1 = (W_G - (5*cardW + 4*gap))/2;
+  const startY1 = 140;
+  for(let i=0;i<5;i++){
+    drawProductCard(ctx, startX1+i*(cardW+gap), startY1, cardW, cardH, products[i], i===0);
+    // Arrow
+    if(i<4){ctx.font='24px serif';ctx.fillStyle='#f59e0b';ctx.fillText('→',startX1+(i+1)*(cardW+gap)-gap/2,startY1+cardH/2+8);}
+  }
+  const startX2 = (W_G - (5*cardW + 4*gap))/2;
+  const startY2 = 280;
+  for(let i=0;i<5;i++){
+    drawProductCard(ctx, startX2+i*(cardW+gap), startY2, cardW, cardH, products[5+i], i===4);
+    if(i<4){ctx.font='24px serif';ctx.fillStyle='#f59e0b';ctx.fillText('→',startX2+(i+1)*(cardW+gap)-gap/2,startY2+cardH/2+8);}
+  }
+  // Connecting arrow from row 1 to row 2
+  ctx.font='24px serif';ctx.fillStyle='#f59e0b';
+  ctx.fillText('↓',startX1+4*(cardW+gap)+cardW/2, startY1+cardH+30);
+  // Stats section
+  const statsY=420;
+  ctx.font='bold 14px Inter';ctx.fillStyle='#64748b';ctx.textAlign='center';
+  ctx.fillText('WHY THIS STACK',W_G/2,statsY);
+  const features=[
+    {icon:'✅',text:'Zero signup — just open and use'},
+    {icon:'🔒',text:'Client-side — your data stays in browser'},
+    {icon:'⚡',text:'Actually functional — real tools, not landing pages'},
+    {icon:'📄',text:'PDF exports on everything'},
+    {icon:'🔗',text:'Full pipeline — tools connect to each other'},
+  ];
+  ctx.textAlign='left';
+  features.forEach((f,i)=>{
+    const fx=180, fy=statsY+30+i*32;
+    ctx.font='20px serif';ctx.fillText(f.icon,fx,fy);
+    ctx.font='15px Inter';ctx.fillStyle='#cbd5e1';ctx.fillText(f.text,fx+32,fy);
+  });
+  // Pricing comparison
+  const compX=700,compY=statsY+10;
+  ctx.font='bold 14px Inter';ctx.fillStyle='#64748b';ctx.textAlign='left';
+  ctx.fillText('COST COMPARISON /mo',compX,compY);
+  const prices=[
+    {name:'OpenSphere Labs',price:'$0',highlight:true},
+    {name:'DocSend + FreshBooks',price:'$34'},
+    {name:'PandaDoc + Harvest',price:'$54'},
+    {name:'Full freelancer stack',price:'$200-500'},
+  ];
+  prices.forEach((p,i)=>{
+    const py=compY+25+i*28;
+    ctx.font='13px Inter';ctx.fillStyle=p.highlight?'#f59e0b':'#94a3b8';ctx.textAlign='left';
+    ctx.fillText(p.name,compX,py);
+    ctx.font='bold 13px Inter';ctx.fillStyle=p.highlight?'#22c55e':'#64748b';ctx.textAlign='right';
+    ctx.fillText(p.price,compX+400,py);
+  });
+  // Footer
+  ctx.textAlign='center';ctx.font='12px Inter';ctx.fillStyle='#475569';
+  ctx.fillText('Built by @atalovesyou · atalovesyou.github.io/opensphere-labs',W_G/2,H_G-25);
+  // Logo area
+  ctx.font='bold 16px Inter';ctx.fillStyle='#f59e0b';
+  ctx.fillText('OpenSphere Labs',W_G/2,H_G-50);
+}
+
+// IMAGE 2: InvoicePilot Demo
+function drawImg2(canvas){
+  const ctx=canvas.getContext('2d');
+  const grad=ctx.createLinearGradient(0,0,0,H_G);grad.addColorStop(0,'#0a0a0a');grad.addColorStop(1,'#0f1a0f');
+  ctx.fillStyle=grad;ctx.fillRect(0,0,W_G,H_G);
+  ctx.textAlign='center';ctx.font='bold 28px Inter';ctx.fillStyle='#22c55e';
+  ctx.fillText('💰 InvoicePilot',W_G/2,50);
+  ctx.font='16px Inter';ctx.fillStyle='#94a3b8';
+  ctx.fillText('"Describe your work. Get a professional invoice in 30 seconds."',W_G/2,80);
+  // Mock input
+  ctx.fillStyle='rgba(255,255,255,0.04)';drawRoundedRect(ctx,100,120,W_G-200,100,12);ctx.fill();
+  ctx.strokeStyle='rgba(34,197,94,0.3)';ctx.lineWidth=1;drawRoundedRect(ctx,100,120,W_G-200,100,12);ctx.stroke();
+  ctx.font='14px Inter';ctx.fillStyle='#22c55e';ctx.textAlign='left';
+  ctx.fillText('💬 "3 months of web development for Acme Corp, $5000/month, due Net 30"',140,160);
+  ctx.font='12px Inter';ctx.fillStyle='#64748b';
+  ctx.fillText('NLP-powered — describe in plain English, get a structured invoice',140,190);
+  // Arrow
+  ctx.textAlign='center';ctx.font='28px serif';ctx.fillStyle='#22c55e';ctx.fillText('↓',W_G/2,250);
+  // Mock invoice
+  ctx.fillStyle='rgba(255,255,255,0.06)';drawRoundedRect(ctx,160,270,W_G-320,380,16);ctx.fill();
+  ctx.strokeStyle='rgba(34,197,94,0.2)';ctx.lineWidth=1;drawRoundedRect(ctx,160,270,W_G-320,380,16);ctx.stroke();
+  // Invoice header
+  ctx.font='bold 22px Inter';ctx.fillStyle='#e2e8f0';ctx.textAlign='left';ctx.fillText('INVOICE #INV-2026-001',200,310);
+  ctx.font='13px Inter';ctx.fillStyle='#64748b';ctx.fillText('From: OpenSphere Labs',200,335);ctx.fillText('To: Acme Corp',200,355);
+  // Table header
+  ctx.fillStyle='rgba(34,197,94,0.1)';ctx.fillRect(200,380,W_G-440,30);
+  ctx.font='bold 12px Inter';ctx.fillStyle='#94a3b8';ctx.textAlign='left';
+  ctx.fillText('Description',210,400);ctx.fillText('Qty',600,400);ctx.fillText('Rate',720,400);ctx.fillText('Amount',850,400);
+  // Table row
+  ctx.font='13px Inter';ctx.fillStyle='#e2e8f0';ctx.fillText('Web Development Services',210,430);
+  ctx.fillText('3',610,430);ctx.fillText('$5,000.00',700,430);ctx.fillText('$15,000.00',830,430);
+  // Divider
+  ctx.strokeStyle='rgba(255,255,255,0.1)';ctx.beginPath();ctx.moveTo(200,450);ctx.lineTo(W_G-200,450);ctx.stroke();
+  // Total
+  ctx.font='bold 16px Inter';ctx.fillStyle='#22c55e';ctx.textAlign='right';ctx.fillText('Total: $15,000.00 USD',W_G-220,490);
+  ctx.font='12px Inter';ctx.fillStyle='#64748b';ctx.fillText('Due: Net 30 days',W_G-220,515);
+  // Features
+  ctx.textAlign='left';ctx.font='bold 13px Inter';ctx.fillStyle='#cbd5e1';
+  const feats=['✅ 3 professional templates','✅ Multi-currency (6+)','✅ Auto-chase emails','✅ PDF export','✅ Client history'];
+  feats.forEach((f,i)=>{ctx.fillText(f,200,560+i*24);});
+  // Right side features
+  const feats2=['✅ NLP natural language input','✅ Tax presets + custom','✅ Status tracking','✅ Overdue detection','✅ Business details memory'];
+  feats2.forEach((f,i)=>{ctx.fillText(f,600,560+i*24);});
+  // Footer
+  ctx.textAlign='center';ctx.font='12px Inter';ctx.fillStyle='#475569';
+  ctx.fillText('atalovesyou.github.io/invoicepilot/',W_G/2,H_G-20);
+}
+
+// IMAGE 3: ContractPilot Review
+function drawImg3(canvas){
+  const ctx=canvas.getContext('2d');
+  const grad=ctx.createLinearGradient(0,0,0,H_G);grad.addColorStop(0,'#0a0a0a');grad.addColorStop(1,'#1a0a1a');
+  ctx.fillStyle=grad;ctx.fillRect(0,0,W_G,H_G);
+  ctx.textAlign='center';ctx.font='bold 28px Inter';ctx.fillStyle='#a855f7';
+  ctx.fillText('📝 ContractPilot',W_G/2,50);
+  ctx.font='16px Inter';ctx.fillStyle='#94a3b8';
+  ctx.fillText('"Paste a client contract. Instantly see every trap."',W_G/2,80);
+  // Mock contract text
+  ctx.fillStyle='rgba(255,255,255,0.03)';drawRoundedRect(ctx,80,110,540,520,12);ctx.fill();
+  ctx.font='bold 14px Inter';ctx.fillStyle='#64748b';ctx.textAlign='left';ctx.fillText('CONTRACT TEXT',100,140);
+  ctx.font='12px Inter';
+  const lines=[
+    {text:'Section 3. Payment Terms',color:'#94a3b8'},
+    {text:'Client shall pay within 90 days of invoice.',color:'#f87171',flag:'⚠️ UNUSUAL'},
+    {text:'Late fees shall not exceed 0.5% per month.',color:'#f87171',flag:'⚠️ LOW'},
+    {text:'',color:''},
+    {text:'Section 5. Intellectual Property',color:'#94a3b8'},
+    {text:'All work product shall be transferred to',color:'#e2e8f0'},
+    {text:'Client upon creation, including all rights.',color:'#f87171',flag:'⚠️ RISK'},
+    {text:'',color:''},
+    {text:'Section 8. Termination',color:'#94a3b8'},
+    {text:'Either party may terminate with 30 days notice.',color:'#22c55e',flag:'✅ FAIR'},
+    {text:'Contractor owes 3 months of work after',color:'#f87171',flag:'⚠️ TRAP'},
+    {text:'termination for any reason.',color:'#f87171'},
+    {text:'',color:''},
+    {text:'Section 12. Liability',color:'#94a3b8'},
+    {text:'Contractor assumes all liability for damages.',color:'#f87171',flag:'🔴 DANGER'},
+  ];
+  lines.forEach((l,i)=>{
+    if(!l.text)return;
+    ctx.fillStyle=l.color;ctx.fillText(l.text,100,170+i*26);
+    if(l.flag){
+      ctx.font='bold 11px Inter';ctx.fillStyle=l.flag.startsWith('✅')?'#22c55e':l.flag.startsWith('🔴')?'#ef4444':'#fbbf24';
+      ctx.fillText(l.flag,500,170+i*26);ctx.font='12px Inter';
+    }
+  });
+  // Risk panel
+  ctx.fillStyle='rgba(255,255,255,0.04)';drawRoundedRect(ctx,660,110,540,520,12);ctx.fill();
+  ctx.strokeStyle='rgba(168,85,247,0.2)';ctx.lineWidth=1;drawRoundedRect(ctx,660,110,540,520,12);ctx.stroke();
+  ctx.font='bold 16px Inter';ctx.fillStyle='#a855f7';ctx.textAlign='left';ctx.fillText('🔍 RISK ANALYSIS',700,145);
+  // Risk score
+  ctx.font='bold 48px Inter';ctx.fillStyle='#ef4444';ctx.textAlign='center';ctx.fillText('HIGH RISK',930,220);
+  ctx.font='14px Inter';ctx.fillStyle='#64748b';ctx.fillText('Score: 78/100 — 4 issues found',930,248);
+  // Findings
+  const findings=[
+    {sev:'🔴',title:'Unlimited liability transfer',desc:'Section 12 makes you personally liable for all damages'},
+    {sev:'🟡',title:'90-day payment terms',desc:'Industry standard is Net 30. This is 3x longer.'},
+    {sev:'🟡',title:'Full IP assignment on creation',desc:'You lose all rights before getting paid'},
+    {sev:'🔴',title:'Post-termination obligation',desc:'3 months free work after termination = modern indentured servitude'},
+  ];
+  ctx.textAlign='left';
+  findings.forEach((f,i)=>{
+    const fy=290+i*75;
+    ctx.font='18px serif';ctx.fillText(f.sev,700,fy);
+    ctx.font='bold 13px Inter';ctx.fillStyle='#e2e8f0';ctx.fillText(f.title,730,fy);
+    ctx.font='12px Inter';ctx.fillStyle='#94a3b8';ctx.fillText(f.desc,730,fy+18);
+  });
+  // Negotiation script preview
+  ctx.font='bold 12px Inter';ctx.fillStyle='#a855f7';ctx.fillText('💡 SUGGESTED PUSHBACK:',700,600);
+  ctx.font='11px Inter';ctx.fillStyle='#94a3b8';
+  ctx.fillText('"I\'d like to discuss Section 12. I\'m comfortable with',700,620);
+  ctx.fillText('standard professional liability, but unlimited personal',700,636);
+  ctx.fillText('exposure isn\'t something I can accept..."',700,652);
+}
+
+// IMAGE 4: ScopeGuard
+function drawImg4(canvas){
+  const ctx=canvas.getContext('2d');
+  const grad=ctx.createLinearGradient(0,0,0,H_G);grad.addColorStop(0,'#0a0a0a');grad.addColorStop(1,'#1a1a0a');
+  ctx.fillStyle=grad;ctx.fillRect(0,0,W_G,H_G);
+  ctx.textAlign='center';ctx.font='bold 28px Inter';ctx.fillStyle='#f59e0b';
+  ctx.fillText('🛡️ ScopeGuard',W_G/2,50);
+  ctx.font='16px Inter';ctx.fillStyle='#94a3b8';
+  ctx.fillText('"First tool ever built specifically for scope creep detection"',W_G/2,80);
+  // Scope input
+  ctx.fillStyle='rgba(255,255,255,0.04)';drawRoundedRect(ctx,80,110,W_G/2-100,260,12);ctx.fill();
+  ctx.font='bold 13px Inter';ctx.fillStyle='#64748b';ctx.textAlign='left';ctx.fillText('CONTRACT SCOPE',100,140);
+  ctx.font='12px Inter';ctx.fillStyle='#94a3b8';
+  ['✓ Logo design (3 concepts + 2 revisions)','✓ Brand color palette','✓ Business card layout','✗ Content writing','✗ Social media management','✗ Photography'].forEach((l,i)=>{
+    ctx.fillStyle=l.startsWith('✗')?'#f8717180':'#94a3b8';ctx.fillText(l,110,170+i*24);
+  });
+  // Client message
+  ctx.font='bold 13px Inter';ctx.fillStyle='#64748b';ctx.fillText('CLIENT MESSAGE:',100,330);
+  ctx.font='12px Inter';ctx.fillStyle='#fbbf24';
+  ctx.fillText('"Love the logo! Can you also write the website copy,',100,355);
+  ctx.fillText('manage our Instagram for a month, and do a quick',100,375);
+  ctx.fillText('photo shoot for the team page?"',100,395);
+  // Results panel
+  const rx=W_G/2+20;
+  ctx.fillStyle='rgba(245,158,11,0.05)';drawRoundedRect(ctx,rx,110,W_G/2-100,260,12);ctx.fill();
+  ctx.strokeStyle='rgba(245,158,11,0.3)';ctx.lineWidth=1;drawRoundedRect(ctx,rx,110,W_G/2-100,260,12);ctx.stroke();
+  ctx.font='bold 16px Inter';ctx.fillStyle='#f59e0b';ctx.textAlign='center';ctx.fillText('SCOPE CREEP SCORE',rx+(W_G/2-100)/2,145);
+  // Score circle
+  ctx.font='bold 64px Inter';ctx.fillStyle='#ef4444';ctx.fillText('82',rx+(W_G/2-100)/2,230);
+  ctx.font='14px Inter';ctx.fillStyle='#ef4444';ctx.fillText('SEVERE CREEP DETECTED',rx+(W_G/2-100)/2,260);
+  // Categories
+  const cats=[
+    {name:'Extra Features',pct:95,color:'#ef4444'},
+    {name:'New Deliverables',pct:88,color:'#f97316'},
+    {name:'Design Changes',pct:15,color:'#22c55e'},
+    {name:'Budget Pressure',pct:40,color:'#fbbf24'},
+  ];
+  ctx.textAlign='left';
+  cats.forEach((c,i)=>{
+    const cy=290+i*20;
+    ctx.font='11px Inter';ctx.fillStyle='#94a3b8';ctx.fillText(c.name,rx+20,cy);
+    // Bar background
+    ctx.fillStyle='rgba(255,255,255,0.05)';ctx.fillRect(rx+150,cy-10,200,12);
+    // Bar fill
+    ctx.fillStyle=c.color+'80';ctx.fillRect(rx+150,cy-10,200*c.pct/100,12);
+    ctx.font='bold 11px Inter';ctx.fillStyle=c.color;ctx.textAlign='right';ctx.fillText(c.pct+'%',rx+370,cy);ctx.textAlign='left';
+  });
+  // Detected violations
+  ctx.fillStyle='rgba(239,68,68,0.08)';drawRoundedRect(ctx,80,400,W_G-160,200,12);ctx.fill();
+  ctx.strokeStyle='rgba(239,68,68,0.2)';ctx.lineWidth=1;drawRoundedRect(ctx,80,400,W_G-160,200,12);ctx.stroke();
+  ctx.font='bold 14px Inter';ctx.fillStyle='#ef4444';ctx.textAlign='left';ctx.fillText('🚨 DETECTED VIOLATIONS',110,430);
+  const violations=[
+    {match:'"write the website copy"',contract:'✗ Content writing',severity:'🔴 DIRECT VIOLATION'},
+    {match:'"manage our Instagram"',contract:'✗ Social media management',severity:'🔴 DIRECT VIOLATION'},
+    {match:'"photo shoot for team page"',contract:'✗ Photography',severity:'🔴 DIRECT VIOLATION'},
+  ];
+  violations.forEach((v,i)=>{
+    const vy=460+i*40;
+    ctx.font='12px Inter';ctx.fillStyle='#fbbf24';ctx.fillText('"'+v.match+'"',120,vy);
+    ctx.fillStyle='#64748b';ctx.fillText('→ matches contract: '+v.contract,400,vy);
+    ctx.fillStyle='#ef4444';ctx.font='bold 11px Inter';ctx.fillText(v.severity,820,vy);
+  });
+  ctx.font='12px Inter';ctx.fillStyle='#475569';ctx.textAlign='center';
+  ctx.fillText('atalovesyou.github.io/scopeguard/',W_G/2,H_G-20);
+}
+
+// IMAGE 5: Pricing Comparison
+function drawImg5(canvas){
+  const ctx=canvas.getContext('2d');
+  const grad=ctx.createLinearGradient(0,0,0,H_G);grad.addColorStop(0,'#0a0a0a');grad.addColorStop(1,'#0a1a0a');
+  ctx.fillStyle=grad;ctx.fillRect(0,0,W_G,H_G);
+  ctx.textAlign='center';ctx.font='bold 32px Inter';ctx.fillStyle='#22c55e';
+  ctx.fillText('Why pay $500/mo when free exists?',W_G/2,55);
+  ctx.font='14px Inter';ctx.fillStyle='#94a3b8';
+  ctx.fillText('OpenSphere Labs vs the competition',W_G/2,82);
+  // Comparison table
+  const cols=[
+    {name:'OpenSphere\nLabs',price:'$0',color:'#22c55e',highlight:true,features:['✅','✅','✅','✅','✅','✅','✅','✅']},
+    {name:'DocSend',price:'$15/mo',color:'#64748b',features:['❌','❌','✅','✅','❌','❌','❌','❌']},
+    {name:'FreshBooks',price:'$19/mo',color:'#64748b',features:['❌','✅','❌','❌','❌','❌','❌','❌']},
+    {name:'PandaDoc',price:'$35/mo',color:'#64748b',features:['❌','❌','✅','✅','❌','❌','❌','❌']},
+    {name:'Birdeye',price:'$299/mo',color:'#64748b',features:['❌','❌','❌','❌','❌','❌','✅','❌']},
+    {name:'Full Stack\n(5+ tools)',price:'$500+/mo',color:'#ef4444',features:['✅','✅','✅','✅','✅','✅','✅','✅']},
+  ];
+  const rowNames=['Client Intake','Invoicing','Proposals','Contracts','Scope Guard','Tracking','Reviews','Name Gen'];
+  const colW=160,rowH=42,startX=140,startY=130;
+  // Headers
+  cols.forEach((c,i)=>{
+    const cx=startX+100+i*colW;
+    ctx.fillStyle=c.highlight?'rgba(34,197,94,0.1)':'transparent';
+    if(c.highlight){ctx.fillRect(cx-5,startY-50,colW,rowH*9+55);}
+    ctx.font='bold 13px Inter';ctx.fillStyle=c.color;ctx.textAlign='center';
+    const nameLines=c.name.split('\n');
+    nameLines.forEach((l,li)=>ctx.fillText(l,cx+colW/2,startY-30+li*18));
+    ctx.font='bold 20px Inter';ctx.fillText(c.price,cx+colW/2,startY+10);
+  });
+  // Feature rows
+  rowNames.forEach((rn,ri)=>{
+    const ry=startY+40+ri*rowH;
+    // Row bg
+    ctx.fillStyle=ri%2===0?'rgba(255,255,255,0.02)':'transparent';
+    ctx.fillRect(startX-20,ry-15,W_G,35);
+    ctx.font='12px Inter';ctx.fillStyle='#94a3b8';ctx.textAlign='right';ctx.fillText(rn,startX+80,ry+5);
+    cols.forEach((c,ci)=>{
+      const cx=startX+100+ci*colW;
+      ctx.font='16px serif';ctx.textAlign='center';
+      ctx.fillText(c.features[ri],cx+colW/2,ry+5);
+    });
+  });
+  // Bottom CTA
+  ctx.fillStyle='rgba(34,197,94,0.1)';drawRoundedRect(ctx,W_G/2-250,H_G-110,500,60,16);ctx.fill();
+  ctx.strokeStyle='rgba(34,197,94,0.3)';ctx.lineWidth=1;drawRoundedRect(ctx,W_G/2-250,H_G-110,500,60,16);ctx.stroke();
+  ctx.font='bold 18px Inter';ctx.fillStyle='#22c55e';ctx.textAlign='center';
+  ctx.fillText('Start free today → atalovesyou.github.io/opensphere-labs/',W_G/2,H_G-73);
+}
+
+// IMAGE 6: Portfolio Overview
+function drawImg6(canvas){
+  const ctx=canvas.getContext('2d');
+  const grad=ctx.createLinearGradient(0,0,0,H_G);grad.addColorStop(0,'#0a0a0a');grad.addColorStop(1,'#0f0f23');
+  ctx.fillStyle=grad;ctx.fillRect(0,0,W_G,H_G);
+  ctx.textAlign='center';ctx.font='bold 28px Inter';ctx.fillStyle='#f59e0b';
+  ctx.fillText('OpenSphere Labs — 10 Products. All Free. All Functional.',W_G/2,50);
+  // Product grid - 2 rows of 5
+  const cardW=210,cardH=140,gap=20;
+  const startX=(W_G-(5*cardW+4*gap))/2;
+  [0,5].forEach((rowOffset,row)=>{
+    const sy=90+row*180;
+    for(let i=0;i<5;i++){
+      const p=products[rowOffset+i];
+      const sx=startX+i*(cardW+gap);
+      // Card
+      ctx.fillStyle='rgba(255,255,255,0.04)';drawRoundedRect(ctx,sx,sy,cardW,cardH,12);ctx.fill();
+      ctx.strokeStyle=p.color+'40';ctx.lineWidth=1;drawRoundedRect(ctx,sx,sy,cardW,cardH,12);ctx.stroke();
+      // Accent bar
+      ctx.fillStyle=p.color+'30';ctx.fillRect(sx+12,sy+12,4,cardH-24);
+      // Emoji + name
+      ctx.font='28px serif';ctx.textAlign='left';ctx.fillText(p.emoji,sx+28,sy+40);
+      ctx.font='bold 14px Inter';ctx.fillStyle='#e2e8f0';ctx.fillText(p.name,sx+62,sy+38);
+      // Description
+      ctx.font='11px Inter';ctx.fillStyle='#94a3b8';ctx.fillText(p.desc,sx+28,sy+62);
+      // URL
+      ctx.font='10px Inter';ctx.fillStyle='#64748b';
+      const slug=p.name.toLowerCase().replace(/[^a-z]/g,'');
+      ctx.fillText('atalovesyou.github.io/'+slug+'/',sx+28,sy+82);
+      // Mini features
+      ctx.font='10px Inter';ctx.fillStyle='#475569';
+      ctx.fillText('✓ Free ✓ No signup',sx+28,sy+105);
+      ctx.fillText('✓ Client-side ✓ PDF',sx+28,sy+120);
+    }
+  });
+  // Bottom stat
+  ctx.fillStyle='rgba(245,158,11,0.08)';drawRoundedRect(ctx,W_G/2-300,H_G-110,600,70,16);ctx.fill();
+  ctx.font='bold 22px Inter';ctx.fillStyle='#f59e0b';ctx.textAlign='center';
+  ctx.fillText('16,000+ lines of code · 10 products · $0 cost · Built by @atalovesyou',W_G/2,H_G-65);
+}
+
+// HERO IMAGE: 2400x1260
+function drawHero(canvas){
+  const ctx=canvas.getContext('2d');
+  const grad=ctx.createLinearGradient(0,0,W_H,H_H);
+  grad.addColorStop(0,'#0a0a0a');grad.addColorStop(0.3,'#0f0f23');grad.addColorStop(0.7,'#1a1a2e');grad.addColorStop(1,'#0a0a1a');
+  ctx.fillStyle=grad;ctx.fillRect(0,0,W_H,H_H);
+  // Glow
+  const glow=ctx.createRadialGradient(W_H/2,400,0,W_H/2,400,600);
+  glow.addColorStop(0,'rgba(245,158,11,0.06)');glow.addColorStop(1,'transparent');
+  ctx.fillStyle=glow;ctx.fillRect(0,0,W_H,H_H);
+  // Title
+  ctx.textAlign='center';ctx.font='bold 72px Inter,system-ui,sans-serif';ctx.fillStyle='#ffffff';
+  ctx.fillText('The Free AI Freelancer Stack',W_H/2,200);
+  ctx.font='28px Inter';ctx.fillStyle='#94a3b8';
+  ctx.fillText('10 tools · 16K lines · $0 to start · No signup · No credit card',W_H/2,260);
+  // Pipeline - 5 per row, 2 rows
+  const cardW=320,cardH=120,gap=30;
+  const startX=(W_H-(5*cardW+4*gap))/2;
+  [0,5].forEach((rowOffset,row)=>{
+    const sy=320+row*170;
+    for(let i=0;i<5;i++){
+      const p=products[rowOffset+i];
+      const sx=startX+i*(cardW+gap);
+      ctx.fillStyle='rgba(255,255,255,0.04)';drawRoundedRect(ctx,sx,sy,cardW,cardH,14);ctx.fill();
+      ctx.strokeStyle=p.color+'40';ctx.lineWidth=1;drawRoundedRect(ctx,sx,sy,cardW,cardH,14);ctx.stroke();
+      ctx.fillStyle=p.color+'30';ctx.fillRect(sx+16,sy+16,4,cardH-32);
+      ctx.font='32px serif';ctx.textAlign='left';ctx.fillText(p.emoji,sx+36,sy+50);
+      ctx.font='bold 18px Inter';ctx.fillStyle='#e2e8f0';ctx.fillText(p.name,sx+76,sy+48);
+      ctx.font='13px Inter';ctx.fillStyle='#94a3b8';ctx.fillText(p.desc,sx+36,sy+78);
+      // Arrow between cards
+      if(i<4){ctx.font='28px serif';ctx.fillStyle='#f59e0b';ctx.textAlign='center';ctx.fillText('→',sx+cardW+gap/2,sy+cardH/2+8);ctx.textAlign='left';}
+    }
+    // Connecting arrow between rows
+    if(row===0){
+      ctx.font='28px serif';ctx.fillStyle='#f59e0b';ctx.textAlign='center';
+      ctx.fillText('↓',startX+4*(cardW+gap)+cardW/2,sy+cardH+35);
+    }
+  });
+  // Bottom section
+  ctx.textAlign='center';ctx.font='bold 24px Inter';ctx.fillStyle='#f59e0b';
+  ctx.fillText('OpenSphere Labs',W_H/2,760);
+  ctx.font='16px Inter';ctx.fillStyle='#94a3b8';
+  ctx.fillText('Built by Atal Agarwal (@atalovesyou) · atalovesyou.github.io/opensphere-labs/',W_H/2,795);
+  // CTA
+  ctx.fillStyle='rgba(245,158,11,0.1)';drawRoundedRect(ctx,W_H/2-300,830,600,60,20);ctx.fill();
+  ctx.strokeStyle='rgba(245,158,11,0.4)';ctx.lineWidth=2;drawRoundedRect(ctx,W_H/2-300,830,600,60,20);ctx.stroke();
+  ctx.font='bold 22px Inter';ctx.fillStyle='#f59e0b';ctx.fillText('🚀 Launching on Product Hunt — April 21, 2026',W_H/2,868);
+  // Bottom features
+  ctx.font='14px Inter';ctx.fillStyle='#64748b';
+  ctx.fillText('✅ Zero signup   ✅ Client-side privacy   ✅ PDF exports   ✅ Full pipeline   ✅ Genuinely functional tools',W_H/2,940);
+}
+
+const imageConfigs=[
+  {id:'img1',title:'Image 1: Hero Pipeline',fn:drawImg1,w:W_G,h:H_G},
+  {id:'img2',title:'Image 2: InvoicePilot Demo',fn:drawImg2,w:W_G,h:H_G},
+  {id:'img3',title:'Image 3: ContractPilot Review',fn:drawImg3,w:W_G,h:H_G},
+  {id:'img4',title:'Image 4: ScopeGuard Detection',fn:drawImg4,w:W_G,h:H_G},
+  {id:'img5',title:'Image 5: Pricing Comparison',fn:drawImg5,w:W_G,h:H_G},
+  {id:'img6',title:'Image 6: Portfolio Overview',fn:drawImg6,w:W_G,h:H_G},
+  {id:'hero',title:'Hero Image (2400×1260)',fn:drawHero,w:W_H,h:H_H},
+];
+
+function generateAll(){
+  const container=document.getElementById('galleries');
+  container.innerHTML='';
+  imageConfigs.forEach(cfg=>{
+    const div=document.createElement('div');
+    div.innerHTML=`<h2 class="text-lg font-bold mt-6 mb-1">${cfg.title} (${cfg.w}×${cfg.h})</h2>
+      <div class="canvas-wrap"><canvas id="${cfg.id}" width="${cfg.w}" height="${cfg.h}"></canvas></div>
+      <button class="btn-sm" onclick="downloadOne('${cfg.id}','${cfg.title.replace(/[^a-zA-Z0-9]/g,'_')}.png')">⬇ Download PNG</button>`;
+    container.appendChild(div);
+    const canvas=document.getElementById(cfg.id);
+    canvas.style.maxWidth='100%';canvas.style.height='auto';
+    cfg.fn(canvas);
+  });
+}
+
+function downloadOne(canvasId,filename){
+  const canvas=document.getElementById(canvasId);
+  const link=document.createElement('a');
+  link.download=filename;link.href=canvas.toDataURL('image/png');link.click();
+}
+
+function downloadAll(){
+  imageConfigs.forEach(cfg=>{
+    setTimeout(()=>downloadOne(cfg.id,cfg.title.replace(/[^a-zA-Z0-9]/g,'_')+'.png'),cfg.id==='hero'?700:100);
+  });
+}
+
+// Auto-generate on load
+window.onload=generateAll;
+</script>
+</body>
+</html>
