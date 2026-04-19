@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenSphere Labs — 60-Second Demo Tour</title>
+<meta name="description" content="Watch 10 free AI tools for freelancers in action. No signup. No BS.">
+<meta property="og:title" content="OpenSphere Labs — 60-Second Demo Tour">
+<meta property="og:description" content="10 free AI tools for freelancers. No signup. No BS. Watch the demo.">
+<meta property="og:image" content="https://atalovesyou.github.io/opensphere-labs/screenshots/gallery-opensphere-labs.png">
+<link rel="canonical" href="https://atalovesyou.github.io/opensphere-labs/demo-tour.html">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a0f;color:#e0e0e0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;overflow:hidden;height:100vh}
+.tour-container{display:flex;flex-direction:column;height:100vh}
+.tour-header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(99,102,241,.3)}
+.tour-header h1{font-size:1.1rem;background:linear-gradient(135deg,#818cf8,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.progress-bar{flex:1;max-width:400px;margin:0 24px;height:4px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#818cf8,#c084fc);transition:width .3s ease;border-radius:2px}
+.step-info{font-size:.85rem;color:#a0a0b0;white-space:nowrap}
+.step-info span{color:#818cf8;font-weight:600}
+.frame-container{flex:1;position:relative;overflow:hidden;background:#111}
+.frame-container iframe{width:100%;height:100%;border:none;opacity:0;transition:opacity .5s ease}
+.frame-container iframe.active{opacity:1}
+.overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.85) 30%);padding:32px 24px 20px;pointer-events:none;z-index:10}
+.product-label{font-size:1.4rem;font-weight:700;margin-bottom:6px}
+.product-desc{font-size:.95rem;color:#b0b0c0;line-height:1.4;max-width:600px}
+.cta-tag{display:inline-block;margin-top:8px;padding:4px 12px;border-radius:20px;font-size:.75rem;font-weight:600;background:rgba(99,102,241,.2);color:#818cf8;border:1px solid rgba(99,102,241,.3)}
+.controls{background:#0d0d15;padding:12px 24px;display:flex;align-items:center;justify-content:center;gap:12px;border-top:1px solid rgba(99,102,241,.2)}
+.btn{padding:8px 20px;border-radius:8px;border:none;cursor:pointer;font-size:.85rem;font-weight:600;transition:all .2s}
+.btn-primary{background:linear-gradient(135deg,#818cf8,#6366f1);color:white}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(99,102,241,.4)}
+.btn-secondary{background:rgba(255,255,255,.08);color:#a0a0b0;border:1px solid rgba(255,255,255,.1)}
+.btn-secondary:hover{background:rgba(255,255,255,.12)}
+.step-dots{display:flex;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.15);transition:all .3s}
+.dot.active{background:#818cf8;transform:scale(1.3)}
+.dot.done{background:#4ade80}
+.splash{position:absolute;inset:0;background:linear-gradient(135deg,#0f0f1a,#1a1a2e);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;transition:opacity .5s ease}
+.splash.hidden{opacity:0;pointer-events:none}
+.splash h2{font-size:2.5rem;background:linear-gradient(135deg,#818cf8,#c084fc,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.splash p{color:#888;font-size:1.1rem;margin-bottom:24px}
+.splash .sub{color:#666;font-size:.85rem;margin-top:16px}
+.timer{position:absolute;top:50px;right:20px;background:rgba(0,0,0,.6);padding:4px 10px;border-radius:6px;font-size:.75rem;color:#818cf8;font-weight:600;z-index:20;backdrop-filter:blur(4px)}
+@media(max-width:768px){
+  .splash h2{font-size:1.5rem}
+  .product-label{font-size:1.1rem}
+  .product-desc{font-size:.85rem}
+  .controls{flex-wrap:wrap;gap:8px}
+  .step-dots{order:-1;width:100%;justify-content:center}
+}
+</style>
+</head>
+<body>
+<div class="tour-container">
+  <div class="splash" id="splash">
+    <h2>OpenSphere Labs</h2>
+    <p>10 free AI tools for freelancers</p>
+    <button class="btn btn-primary" onclick="startTour()" style="padding:12px 32px;font-size:1rem">▶ Start 60-Second Tour</button>
+    <p class="sub">Auto-playing demo · No signup required</p>
+  </div>
+
+  <div class="tour-header">
+    <h1>⚡ Demo Tour</h1>
+    <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+    <div class="step-info">Step <span id="currentStep">1</span> / <span id="totalSteps">8</span></div>
+  </div>
+
+  <div class="timer" id="timer">0:00 / 1:00</div>
+
+  <div class="frame-container" id="frames">
+    <!-- Iframes injected by JS -->
+  </div>
+
+  <div class="overlay" id="overlay">
+    <div class="product-label" id="productLabel">—</div>
+    <div class="product-desc" id="productDesc">—</div>
+    <div class="cta-tag" id="ctaTag">—</div>
+  </div>
+
+  <div class="controls">
+    <button class="btn btn-secondary" onclick="prevStep()">← Back</button>
+    <div class="step-dots" id="dots"></div>
+    <button class="btn btn-primary" onclick="nextStep()">Next →</button>
+    <button class="btn btn-secondary" id="playBtn" onclick="toggleAutoplay()">⏸ Pause</button>
+  </div>
+</div>
+
+<script>
+const steps=[
+  {url:'https://atalovesyou.github.io/opensphere-labs/',name:'OpenSphere Labs',desc:'The complete freelancer toolkit — 10 AI-powered tools, zero cost, zero signup.',tag:'🏠 Portfolio Hub'},
+  {url:'https://atalovesyou.github.io/invoicepilot/',name:'InvoicePilot',desc:'Describe your work in plain English → professional invoice in 30 seconds. Multi-currency, auto-chase late payments.',tag:'💰 Invoice Builder'},
+  {url:'https://atalovesyou.github.io/scopeguard/',name:'ScopeGuard',desc:'The first tool ever built for scope creep detection. Paste your contract + client message → instant creep score.',tag:'🛡️ Scope Creep Detector'},
+  {url:'https://atalovesyou.github.io/contractpilot/',name:'ContractPilot',desc:'AI contract review for freelancers. Find every trap before you sign. Get negotiation scripts in 3 tones.',tag:'📋 Contract Review'},
+  {url:'https://atalovesyou.github.io/intakebot/',name:'IntakeBot',desc:'Conversational AI that qualifies your leads 24/7. Builds structured intake data while you sleep.',tag:'🤖 Client Intake'},
+  {url:'https://atalovesyou.github.io/proposalpilot/',name:'ProposalPilot',desc:'Build winning proposals in 90 seconds. NLP parsing, 3 templates, pricing calculator, PDF export.',tag:'📝 Proposal Builder'},
+  {url:'https://atalovesyou.github.io/ghosttracker/',name:'GhostTracker',desc:'Know exactly when clients open your proposals. Engagement heatmap, AI follow-up emails, ghost detection.',tag:'👁️ Proposal Tracking'},
+  {url:'https://atalovesyou.github.io/unslop-ai/',name:'UnSlop.ai',desc:'Detect and remove AI-generated slop. 250+ patterns, 8 dimensions, tone presets, PDF reports.',tag:'✨ Content Humanizer'},
+];
+
+let current=0, playing=false, interval=null, elapsed=0, stepDuration=7500, clockInterval=null;
+const framesEl=document.getElementById('frames');
+const dotsEl=document.getElementById('dots');
+const progressEl=document.getElementById('progress');
+const labelEl=document.getElementById('productLabel');
+const descEl=document.getElementById('productDesc');
+const ctaEl=document.getElementById('ctaTag');
+const stepEl=document.getElementById('currentStep');
+const timerEl=document.getElementById('timer');
+const playBtn=document.getElementById('playBtn');
+const splashEl=document.getElementById('splash');
+
+// Create iframes
+steps.forEach((s,i)=>{
+  const iframe=document.createElement('iframe');
+  iframe.src=s.url;
+  iframe.loading=i<2?'eager':'lazy';
+  iframe.dataset.index=i;
+  framesEl.appendChild(iframe);
+});
+
+// Create dots
+steps.forEach((_,i)=>{
+  const dot=document.createElement('div');
+  dot.className='dot'+(i===0?' active':'');
+  dot.onclick=()=>goToStep(i);
+  dot.style.cursor='pointer';
+  dotsEl.appendChild(dot);
+});
+
+document.getElementById('totalSteps').textContent=steps.length;
+
+function startTour(){
+  splashEl.classList.add('hidden');
+  goToStep(0);
+  startAutoplay();
+}
+
+function goToStep(n){
+  if(n<0||n>=steps.length) return;
+  current=n;
+  const iframes=framesEl.querySelectorAll('iframe');
+  iframes.forEach((f,i)=>{f.classList.toggle('active',i===n)});
+  
+  const s=steps[n];
+  labelEl.textContent=s.name;
+  descEl.textContent=s.desc;
+  ctaEl.textContent=s.tag;
+  stepEl.textContent=n+1;
+  progressEl.style.width=((n+1)/steps.length*100)+'%';
+  
+  const dots=dotsEl.querySelectorAll('.dot');
+  dots.forEach((d,i)=>{
+    d.className='dot';
+    if(i<n) d.classList.add('done');
+    if(i===n) d.classList.add('active');
+  });
+}
+
+function nextStep(){
+  if(current<steps.length-1){goToStep(current+1)}
+  else{
+    stopAutoplay();
+    // Show end state
+    labelEl.textContent='🎉 Tour Complete!';
+    descEl.textContent='10 tools. $0 to start. No signup. Launching on Product Hunt April 21.';
+    ctaEl.textContent='🚀 Product Hunt Launch';
+    ctaEl.style.cursor='pointer';
+    ctaEl.onclick=()=>window.open('https://atalovesyou.github.io/opensphere-labs/','_blank');
+  }
+}
+
+function prevStep(){if(current>0) goToStep(current-1)}
+
+function startAutoplay(){
+  playing=true;
+  playBtn.textContent='⏸ Pause';
+  elapsed=0;
+  clearInterval(interval);
+  clearInterval(clockInterval);
+  interval=setInterval(()=>{
+    elapsed+=100;
+    if(elapsed>=stepDuration){
+      elapsed=0;
+      nextStep();
+    }
+  },100);
+  clockInterval=setInterval(updateTimer,1000);
+}
+
+function stopAutoplay(){
+  playing=false;
+  playBtn.textContent='▶ Play';
+  clearInterval(interval);
+  clearInterval(clockInterval);
+}
+
+function toggleAutoplay(){
+  if(playing) stopAutoplay(); else startAutoplay();
+}
+
+function updateTimer(){
+  const totalMs=steps.length*stepDuration;
+  const currentMs=(current*stepDuration)+elapsed;
+  const totalSec=Math.round(totalMs/1000);
+  const currentSec=Math.round(currentMs/1000);
+  const cm=Math.floor(currentSec/60);
+  const cs=String(currentSec%60).padStart(2,'0');
+  const tm=Math.floor(totalSec/60);
+  const ts=String(totalSec%60).padStart(2,'0');
+  timerEl.textContent=`${cm}:${cs} / ${tm}:${ts}`;
+}
+
+// Keyboard controls
+document.addEventListener('keydown',(e)=>{
+  if(e.key==='ArrowRight'||e.key===' ') nextStep();
+  if(e.key==='ArrowLeft') prevStep();
+  if(e.key==='p') toggleAutoplay();
+});
+
+// Start at step 0 but hidden behind splash
+goToStep(0);
+</script>
+</body>
+</html>
