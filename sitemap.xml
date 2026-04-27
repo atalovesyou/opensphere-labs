@@ -102,4 +102,10 @@
   <changefreq>monthly</changefreq>
   <priority>0.9</priority>
 </url>
+<url>
+  <loc>https://atalovesyou.github.io/opensphere-labs/blog-contract-generator.html</loc>
+  <lastmod>2026-04-27</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.9</priority>
+</url>
 </urlset>
